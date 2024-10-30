@@ -1,0 +1,28 @@
+.cta{
+    width: 80%;
+    margin:100px auto;
+    text-align: center;
+    padding: 100px 0;
+    font-family: 'Poppins';
+    color: #fff;
+    background-image:linear-gradient(rgba(0, 0, 0, 0.7),rgba(0,0,0,0.7)), url(images/banner2.jpg) ;
+    background-position: center;
+    background-size: cover;
+    border-radius: 10px;
+}
+.cta h1{
+    font-size: 36px;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.cta a{
+    text-decoration: none;
+    color: #fff;
+    border: 1px solid;
+    padding: 10px;
+    background: transparent;
+}
+.cta a:hover{
+    background: #f44;
+}

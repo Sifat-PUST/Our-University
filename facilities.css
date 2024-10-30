@@ -1,0 +1,30 @@
+.facilities{
+    width: 80%;
+    margin: auto;
+    text-align: center;
+    padding: 5% 0;
+    font-family: 'Poppins';
+}
+.facilities h1{
+    font-size: 36px;
+    font-weight: 600;
+    font-family: 'Poppins';
+}
+.facilities p{
+    font-size: 14px;
+    font-weight: 300;
+    color: #777;
+}
+.facilities-col{
+    text-align: left;
+    line-height: 1.3;
+    margin: 10% 0;
+}
+.facilities-col img{
+    width: 100%;
+    border-radius: 10px;
+    display: block;
+}
+.facilities-col h3{
+    margin: 10px 0 15px 0;
+}

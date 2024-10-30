@@ -1,0 +1,47 @@
+.comments{
+    text-align: center;
+    width: 80%;
+    margin: auto;
+    padding: 50px 0;
+    font-family: 'Poppins';
+}
+.comments h1{
+    font-weight: 600;
+    font-size: 36px
+}
+.comments p{
+    font-size: 14px;
+    font-weight: 300;
+    line-height: 22px;
+    color: #777;
+    padding: 10px;
+    padding-bottom: 30px;
+}
+.comment-col{
+    display: grid;
+    grid-template-columns: 55px 1fr;
+    background-color: #fff3f3;
+    padding: 15px;
+    border-radius: 10px;
+}
+.comment{
+    text-align: left;
+    margin-left: 10px;
+}
+.comment p{
+    margin: 0;
+    padding: 0;
+    padding-bottom: 15px;
+}
+.comment h3{
+    font-weight: 500;
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+.comment-col img{
+    width: 80%;
+    border-radius: 100%;
+}
+.comment i{
+    color: #f44336;
+}
