@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>দূরত্ব নির্ণয়</title>
+    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f8ff;
+        }
+        .container {
+            text-align: center;
+            max-width: 400px;
+            padding: 20px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #distanceResult {
+            font-size: 18px;
+            color: #333;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>দুই অবস্থানের মধ্যে দূরত্ব নির্ণয়</h1>
+        <button onclick="getDistance()">অবস্থান সংগ্রহ করুন</button>
+        <p id="distanceResult"></p>
+    </div>
+    <button><a href="gps mean.html" style="text-decoration: none;
+    color: red;">Back</a></button>
+    <button><a href="../index.html" style="text-decoration: none;
+    color: red;">Home</a></button>
+
+
+    <script>
+        const EARTH_RADIUS = 20925734; // পৃথিবীর ব্যাসার্ধ (ফুটে)
+        
+        // হ্যাভার্সাইন সূত্র ব্যবহার করে দূরত্ব নির্ণয় ফাংশন
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const toRadian = (degree) => (degree * Math.PI) / 180;
+
+            const deltaLat = toRadian(lat2 - lat1);
+            const deltaLon = toRadian(lon2 - lon1);
+
+            const a = Math.sin(deltaLat / 2) ** 2 +
+                      Math.cos(toRadian(lat1)) * Math.cos(toRadian(lat2)) *
+                      Math.sin(deltaLon / 2) ** 2;
+
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+            return EARTH_RADIUS * c; // ফুটে দূরত্ব
+        }
+
+        let startPosition, endPosition;
+
+        function getDistance() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition((position) => {
+                    if (!startPosition) {
+                        // প্রাথমিক অবস্থান সেট
+                        startPosition = position.coords;
+                        alert("প্রথম অবস্থান সঞ্চিত হয়েছে। দ্বিতীয় অবস্থানে যান এবং আবার এই বাটনটি চাপুন।");
+                    } else {
+                        // দ্বিতীয় অবস্থান সেট
+                        endPosition = position.coords;
+
+                        const distance = calculateDistance(
+                            startPosition.latitude,
+                            startPosition.longitude,
+                            endPosition.latitude,
+                            endPosition.longitude
+                        );
+
+                        document.getElementById("distanceResult").innerText = `দুই অবস্থানের মধ্যে দূরত্ব: ${distance.toFixed(2)} ফুট`;
+                    }
+                });
+            } else {
+                alert("আপনার ডিভাইসের জিপিএস অনুমতি দেয়নি বা এটি সমর্থিত নয়।");
+            }
+        }
+    </script>
+</body>
+</html>

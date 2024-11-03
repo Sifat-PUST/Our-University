@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>দুই অবস্থানের মধ্যে দূরত্ব নির্ণয় (ফুট-ইঞ্চিতে)</title>
+</head>
+<body>
+    <h2>দুই অবস্থানের মধ্যে দূরত্ব নির্ণয়</h2>
+    <p id="status">অবস্থানের তথ্য সংগ্রহ করুন</p>
+    <button onclick="startCollectingPosition(1)">প্রথম অবস্থান সংগ্রহ শুরু</button>
+    <button onclick="startCollectingPosition(2)" disabled>দ্বিতীয় অবস্থান সংগ্রহ শুরু</button>
+    <p id="avg-coordinates">প্রথম ও দ্বিতীয় অবস্থানের গড় স্থানাঙ্ক সংগ্রহ করা হচ্ছে...</p>
+    <p id="distance">দূরত্ব: </p>
+    <button><a href="gps.html" style="text-decoration: none;">Normally</a></button><br><br>
+    <button><a href="../index.html" style="text-decoration: none;
+    color: red;">Back</a></button>
+
+    <script>
+        let positions1 = [];
+        let positions2 = [];
+        let count1 = 0;
+        let count2 = 0;
+
+        function calculateAverage(positions) {
+            const total = positions.reduce((sum, pos) => {
+                sum.latitude += pos.latitude;
+                sum.longitude += pos.longitude;
+                return sum;
+            }, {latitude: 0, longitude: 0});
+
+            return {
+                latitude: total.latitude / positions.length,
+                longitude: total.longitude / positions.length
+            };
+        }
+
+        function haversineDistance(coords1, coords2) {
+            const R = 6371e3; // পৃথিবীর ব্যাসার্ধ মিটারে
+            const φ1 = coords1.latitude * Math.PI / 180;
+            const φ2 = coords2.latitude * Math.PI / 180;
+            const Δφ = (coords2.latitude - coords1.latitude) * Math.PI / 180;
+            const Δλ = (coords2.longitude - coords1.longitude) * Math.PI / 180;
+
+            const a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+                      Math.cos(φ1) * Math.cos(φ2) *
+                      Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+            return R * c; // মিটারে দূরত্ব
+        }
+
+        function convertToFeetInches(meters) {
+            const feet = meters * 3.28084; // ফুটে রূপান্তর
+            const feetPart = Math.floor(feet);
+            const inchesPart = Math.round((feet - feetPart) * 12);
+            return `${feetPart} ফুট ${inchesPart} ইঞ্চি`;
+        }
+
+        function showAveragePosition(posNum) {
+            const positions = posNum === 1 ? positions1 : positions2;
+            const avgPosition = calculateAverage(positions);
+
+            document.getElementById("avg-coordinates").innerText = 
+                `${posNum === 1 ? 'প্রথম' : 'দ্বিতীয়'} অবস্থানের গড়: অক্ষাংশ ${avgPosition.latitude.toFixed(6)}, দ্রাঘিমাংশ ${avgPosition.longitude.toFixed(6)}`;
+
+            if (posNum === 1) {
+                document.querySelector("button[onclick='startCollectingPosition(2)']").disabled = false;
+            } else {
+                const avgPosition1 = calculateAverage(positions1);
+                const avgPosition2 = calculateAverage(positions2);
+                const distance = haversineDistance(avgPosition1, avgPosition2);
+                
+                // কিলোমিটার দূরত্ব ফুট-ইঞ্চিতে রূপান্তর
+                const distanceFeetInches = convertToFeetInches(distance);
+                document.getElementById("distance").innerText = `দূরত্ব: ${distanceFeetInches}`;
+            }
+        }
+
+        function getPosition(posNum) {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition((position) => {
+                    const coords = {
+                        latitude: position.coords.latitude,
+                        longitude: position.coords.longitude
+                    };
+
+                    if (posNum === 1) {
+                        positions1.push(coords);
+                        count1++;
+                        document.getElementById("status").innerText = `প্রথম অবস্থানে সংগ্রহকৃত সংখ্যা: ${count1}`;
+                        
+                        if (count1 >= 10) {
+                            showAveragePosition(1);
+                            clearInterval(intervalId1);
+                        }
+                    } else {
+                        positions2.push(coords);
+                        count2++;
+                        document.getElementById("status").innerText = `দ্বিতীয় অবস্থানে সংগ্রহকৃত সংখ্যা: ${count2}`;
+                        
+                        if (count2 >= 10) {
+                            showAveragePosition(2);
+                            clearInterval(intervalId2);
+                        }
+                    }
+                }, (error) => {
+                    document.getElementById("status").innerText = "অবস্থান নির্ণয় ব্যর্থ হয়েছে।";
+                });
+            } else {
+                document.getElementById("status").innerText = "জিপিএস সমর্থিত নয়।";
+            }
+        }
+
+        function startCollectingPosition(posNum) {
+            document.getElementById("status").innerText = `${posNum === 1 ? 'প্রথম' : 'দ্বিতীয়'} অবস্থান সংগ্রহ হচ্ছে...`;
+            if (posNum === 1) {
+                intervalId1 = setInterval(() => getPosition(1), 2000);
+            } else {
+                intervalId2 = setInterval(() => getPosition(2), 2000);
+            }
+        }
+
+        let intervalId1, intervalId2;
+    </script>
+</body>
+</html>

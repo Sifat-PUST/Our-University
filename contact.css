@@ -1,0 +1,38 @@
+.map{
+    width: 80%;
+    margin: auto;
+    padding: 8% 0;
+}
+.map iframe{
+ width: 100%;
+}
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+.contact{
+    width: 80%;
+    margin:30px auto;
+}
+.contact-col{
+    flex-basis: 49%;
+}
+.info{
+    display: flex;
+    margin: auto;
+    align-items: center;
+    padding-bottom: 30px;
+}
+.details{
+    margin-left: 5%;
+}
+.details h5{
+    font-weight: 500;
+    font-size: 16px;
+}
+.details p{
+    font-size: 14px;
+    font-weight: 300;
+}
+
